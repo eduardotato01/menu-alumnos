@@ -1,0 +1,305 @@
+#include <iostream>
+#include <cstdio>
+#include <cstring>
+#include <cstdlib>
+#include <conio.h>
+#include <iomanip>
+
+using namespace std;
+
+struct alumno 
+{
+	int carne;
+	char nombres[50];
+	char correo[50];
+	char cursos[50];
+	char seccion [50];
+	char estado [50];
+	char promedio[50];	
+};
+
+
+void listadoDeAlumnos();
+
+void crearRegistroAlumno();
+void mostrarArchivoAlumno();
+void editarArchivoAlumno();
+
+void buscarArchivoAlumno();
+
+
+
+
+
+int main ()
+{
+	int opcion;
+	char opc = 's';
+	while (opc == 's')
+	{
+        system("cls");
+
+        cout << "\t\t     ====== COLEGIO EL BUEN CHAPIN  ======"    ;
+        cout <<"\n\n                     ";
+        cout <<"SELECCIONE LA OPCION QUE DESEA REALIZAR   ";
+        cout <<"\n\n";
+     	cout << "\n \t\t\t 1. Registrar Alumno";
+        cout << "\n \t\t\t 2. Mostrar Datos";
+        cout << "\n \t\t\t 3. Modificar datos de Alumnos ";
+        cout << "\n \t\t\t 4. Buscar Alumnos";
+        cout << "\n \t\t\t 5. Mensaje de Salida";
+        cout << "\n\n";
+        cout << "\t\t\t Seleccione su Opcion :=> ";
+        cin>>opcion;
+        if(opcion>5 && opcion <= 0)
+	    {
+            cout<<"\n \t\t\tOpcion invalida!!!"<<endl;
+            cout<<"\n \t\t\tIngrese la Opcion Correcta: ";
+            cin>>opcion;
+        }
+        switch(opcion)
+        {
+        	case 1: 
+         		crearRegistroAlumno();
+         		break;
+         	case 2:
+         		mostrarArchivoAlumno();
+         		break;
+                case 3: 
+         		editarArchivoAlumno();
+         		break;
+         	case 4: 
+         	        buscarArchivoAlumno();
+         	        break;
+         	case 5: 
+                    cout<<"\n\n";
+         	 		cout<<"Desea Regresar a LISTADO DE ALUMNOS S/N ?\n"<<endl;
+                  
+				cin>>opc;
+				break;
+       } 
+        
+	}
+		system("Pause()");
+		
+}
+void crearRegistroAlumno()
+{
+	system("cls");	
+	FILE *F;
+	alumno A; 
+	int carne;
+	
+	//capturando Datos;
+	do{
+	cout<<"Carne ---> "; 
+	cin>>A.carne;
+
+
+	} 
+	while(A.carne <= 0 || A.carne >= 99);
+	
+	
+	cout<<"Nombre ---> ";
+	cin>>A.nombres;
+	cout<<"correo ---> ";
+	cin>>A.correo;
+	cout<<"Curso ---> ";
+	cin>>A.cursos;
+	cout<<"seccion ---> ";
+	cin>>A.seccion;
+	cout<<"estado ---> ";
+	cin>>A.estado;
+	cout<<"promedio ---> ";
+	cin>>A.promedio;
+	F = fopen("datosAlumno.txt","a+");
+	
+	
+    
+    if (F == NULL)
+        {
+    	cout<<"No se puede abrir el Archivo"<<endl;
+    	exit(1);
+	}
+	
+	fwrite(&A,sizeof(A),1/* numero de archivoa a guardar*/,F/*(rn donde se guarda)*/);
+	fclose(F);
+
+	
+	
+	cout<<"Alumno archivado\n\n"<<endl;
+	
+		system("Pause()");
+}
+ 
+void mostrarArchivoAlumno()
+{
+	system("cls");
+	
+	alumno A; 
+	
+	FILE *J;
+	
+	J = fopen("datosAlumno.txt","a+");
+
+	
+	if (J == NULL)
+	{
+		cout<<"No se puede Abrir el Archivo"<<endl;
+		exit(1);
+	}
+	
+    cout<<"========================================\n"<<endl;
+    cout<<"Carne\tNombre\tCorreo\tCurso\tSeccion\tEstado\tPromedio"<<endl;
+    cout<<"----------------------------------------\n"<<endl;
+    
+    fread(&A,sizeof(A),1,J);
+    while (!feof(J))  
+    {
+    	
+    	cout<<A.carne;
+    	
+    	cout<<"\t"<<A.nombres;
+    	
+    	cout<<"\t"<<A.correo;
+    	cout<<setw(12)<<A.cursos;
+    	cout<<"\t"<<A.seccion;
+    	cout<<"\t"<<A.estado;
+    	cout<<"\t"<<A.promedio;
+    
+    	
+    	cout<<"\n"<<endl;
+    	fread(&A,sizeof(A),1,J);
+	};
+	
+	fclose(J);
+	
+	cout<<"\n\n";
+        system("Pause()");
+
+}
+void buscarArchivoAlumno()
+{
+	system("cls");
+	FILE *H;
+	alumno A;
+	int carne;
+	
+	cout<<"Carne a Buscar ---> ";
+	cin>>carne;getchar();
+	
+	H = fopen("datosAlumno.txt","a+");
+	
+	if (H == NULL)
+	{
+		cout<<"No se Puede abrir el Archivo"<<endl;
+		exit(1);
+		
+	}
+	
+    cout<<"========================================\n"<<endl;
+    cout<<"Carne\tNombre\tCurso"<<endl;
+    cout<<"----------------------------------------\n"<<endl;
+    
+    fread(&A, sizeof(A),1,/* se guarda un elemento por uno*/H); // H es donde se guardan los elementos donde se direcciona al puntero;
+    
+    // Desplegando el registro// lectura;
+    while (!feof(H))
+    {
+    	if (A.carne == carne)
+    	{
+    		cout<<A.carne;
+    		cout<<"\t"<<A.nombres;
+    		cout<<"\t"<<A.correo;
+    		cout<<"\t"<<A.seccion;
+    		cout<<"\t"<<A.estado;
+    		cout<<"\t"<<A.promedio;
+    		
+    		cout<<setw(12)<<A.carne;
+    		cout<<"\n"<<endl;
+    		
+		}
+		fread(&A,sizeof(A),1,H);
+	};
+	//cerrando el archivo;
+	fclose(H);
+	system("Pause()");
+	
+}
+void editarArchivoAlumno()
+{
+	system("cls");
+	FILE *FF; //  variable Puntero para Abrir  el archivo existente;
+	FILE *GG;// variable Puntero para crear un archivo temporal;
+	alumno A;
+	int hallado = 0;
+	int remove01;
+	int rename01;
+	int carne;
+	
+	cout<<"Carne a Editar ---> ";
+	cin>>carne;getchar(); 
+		FF = fopen("datosAlumno.txt","r+b"); //  r == abre un fichero para lectura. Si el fichero no existe devuelve error. 
+	                             // + == sÃƒÂ­mbolo utilizado para abrir el fichero para lectura y escritura.
+    
+    
+    if (FF == NULL)
+    {
+    	cout<<"No se puede abrir el archivo\n "<<endl;
+    	exit(1);
+	}
+	GG = fopen("Tempt.txt","a+");
+	// consistencia del archivo;
+	if (GG == NULL)
+	{
+		cout<<"No se puede abrir el Archivo\n";
+		exit(1);
+	}
+	// aqui siempre debe empezar el ciclo de lectura
+    // y fread() regresa siempre cuantas estructuras leyo
+     cout<<"========================================\n"<<endl;
+     cout<<"Carne\tNombre\tApellido\tCurso"<<endl;
+     cout<<"----------------------------------------\n"<<endl;
+	
+     fread(&A,sizeof(A),1,FF);
+	//proceso de  reescritura;	
+	while(!feof(FF))
+	{
+		if (A.carne == carne)
+		{
+			
+			cout<<"Nuevo estado ---> ";
+			gets(A.estado);
+			cout<<"Nuevo promedio ---> ";
+			gets(A.promedio);
+			
+			
+			fwrite(&A, sizeof(A), 1, GG); // fwrite (direcc_dato, tamaÃƒÂ±o_dato, numero_datos, punt_fichero);
+			hallado = 1;
+		}
+		else
+		{
+			fwrite(&A,sizeof(A),1,GG);
+		}
+		   fread(&A,sizeof(A),1,FF);
+		
+	};// termina el while;
+	// cerrando archivos;
+	fclose(FF);
+	fclose(GG);
+	
+	 //Removiendo y eliminando
+    //Recordar que los nombres Directorios/carpetas y Archivos de datos no
+    // pueden tener mas de 8.3  caracteres
+    remove01 = remove("datosAlumno.txt");
+    cout<<"REMOVIDO"<<"  "<<remove01;
+    rename01 = rename("Tempt.txt","datosAlumno.txt");
+    cout<<"RENOMBRADO"<<"  "<<rename01;
+    // avisando;
+    if ( hallado == 0)
+    	cout<<"No existe este CODIGO \n\n";
+	else
+		cout<<"Registro Actualizado"<<endl;
+	system("Pause()");
+	
+}
